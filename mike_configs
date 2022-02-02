@@ -368,6 +368,7 @@ Host *
   IdentityFile ~/.ssh/ajdent_Github
   IdentityFile ~/.ssh/for_gitlab
 
+# this doesn't seem to be enough without providing the identity file for Host *
 Host github
     HostName github.com
     User git
@@ -396,7 +397,7 @@ Host ws
 Host step1
     HostName campus-server.college.edu
     User arthur_dent
-    # apparently the 2 specifies that this is a DSA key
+    # apparently, the 2 specifies that this is a DSA key
     Identityfile2 ~/.ssh/campus-server-key
 
 Host uni_cluster
@@ -445,6 +446,8 @@ Host uni_cluster
             # language-specific syntax highlighting/linting
                 # (currently only a few others on approved list, so use at your own risk)
         # Jupyter notebooks in vscode are amazing
+            # can edit text with sensible keybindings, rather than in browser
+            # environment variables?!?!!?!
         # ssh functionality in Remote Development is amazing
     # Latexit via `Services`
         # maybe mac only?
@@ -456,12 +459,15 @@ Host uni_cluster
             # product called Mathpix Snipping Tool on my personal computer.
             # However, it's not on the snl approved list so it's not on this machine
         # Outlook
-        # Powerpoint
+        # Powerpoint/Word
+            # I am reasonably confident you can mess with transparency options
+                # so they're not boxed in white
             # write the latex source in the 'notes' part, so you'll have it later
         # Others?
+        # Note: I believe Chrome has an extension that can do this in-browser
 # Suggestions from others:
-    # Luca: see list/files (permission to add to repo?)
-    # Scot: see list (permission to add to repo?)
+    # Luca: see list/files
+    # Scot: see list
     # Andy: handwritten list
         # I favor a handful of latex lists, these days
     # Jeff Johnson:
@@ -476,7 +482,6 @@ Host uni_cluster
             # gets sourced by a remote machine's local bashrc
             # ... haven't tried this yet, but reach out later if you're interested
 # Vexing Questions:
-    # Does anyone know if you can pop out a compose mail pane in Outlook?
     # What's with the `Host *` that Github uses?
     # Does anyone know how to "fix" Outlook's interpretation of ctrl+A/E?
 

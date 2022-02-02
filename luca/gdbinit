@@ -1,0 +1,7 @@
+add-auto-load-safe-path /home/lbertag/workdir
+set print pretty on
+set print object on
+set print max-depth 4
+set style address foreground red
+set max-value-size unlimited
+catch throw
