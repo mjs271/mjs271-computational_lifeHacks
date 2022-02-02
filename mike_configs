@@ -1,0 +1,483 @@
+# Note: Mike takes no responsibility for anything that breaks your workflow,
+# and won't feel bad about any of these that are embarrassing or bad habits :)
+# Note: These are almost entirely clipped from stackexchange or elsewhere over
+# the course of years, so my profound apologies if an uncredited author
+# runs across them
+
+# get rid of login banner that's never done anything useful for me (or don't :) )
+cd ~ && touch .hushlogin
+
+# =============================================================================#
+# =============================================================================#
+#                                           ,---,                              #
+#         ,---,                           ,--.' |                              #
+#       ,---.'|                           |  |  :      __  ,-.                 #
+#       |   | :                  .--.--.  :  :  :    ,' ,'/ /|                 #
+#       :   : :      ,--.--.    /  /    ' :  |  |,--.'  | |' | ,---.           #
+#       :     |,-.  /       \  |  :  /`./ |  :  '   ||  |   ,'/     \          #
+#       |   : '  | .--.  .-. | |  :  ;_   |  |   /' :'  :  / /    / '          #
+#       |   |  / :  \__\/: . .  \  \    `.'  :  | | ||  | ' .    ' /           #
+#       '   : |: |  ," .--.; |   `----.   \  |  ' | :;  : | '   ; :__          #
+#       |   | '/ : /  /  ,.  |  /  /`--'  /  :  :_:,'|  , ; '   | '.'|         #
+#       |   :    |;  :   .'   \'--'.     /|  | ,'     ---'  |   :    :         #
+#       /    \  / |  ,     .-./  `--'---' `--''              \   \  /          #
+#       `-'----'   `--`---'                                   `----'           #
+#                 ,--,                       ,---,                             #
+#                / .`|                     ,--.' |                             #
+#               /' / ;     ,----,          |  |  :      __  ,-.                #
+#              /  / .'   .'   .`| .--.--.  :  :  :    ,' ,'/ /|                #
+#             /  / ./ .'   .'  .'/  /    ' :  |  |,--.'  | |' | ,---.          #
+#            / ./  /,---, '   ./|  :  /`./ |  :  '   ||  |   ,'/     \         #
+#           /  /  / ;   | .'  / |  :  ;_   |  |   /' :'  :  / /    / '         #
+#          /  /  /  `---' /  ;--,\  \    `.'  :  | | ||  | ' .    ' /          #
+#         ;  /  /     /  /  / .`| `----.   \  |  ' | :;  : | '   ; :__         #
+#       ./__;  /    ./__;     .' /  /`--'  /  :  :_:,'|  , ; '   | '.'|        #
+#       |   : /     ;   |  .'   '--'.     /|  | ,'     ---'  |   :    :        #
+#       ;   |/      `---'         `--'---' `--''              \   \  /         #
+#       `---'                                                  `----'          #
+# =============================================================================#
+#                         ~/.bashrc or ~/.zshrc                                #
+# =============================================================================#
+
+# =====================================================#
+#***things I use on my mac (some on remote machines)***#
+# =====================================================#
+
+# Note: some of these might be zsh instead of bash, but are probably close
+# and/or google-able
+
+# makes ls a little more informative/pretty
+alias ls='ls -FG'
+# long list (l), sort by reverse time (tr), show hidden files (a),
+# human-readable file sizes (h)
+alias lsl='ls -ltrah'
+# much the same as above but reverse sort by file size
+alias lss='ls -lhSra'
+# because I swear I type this \geq 1/20 times
+alias sl='ls'
+
+# saves typing long paths or multiple cd's
+alias sandia='cd /Users/ajdent/Sandia'
+alias dtop='cd ~/Desktop'
+alias dls='cd ~/Downloads'
+# open zshrc in sublime
+alias rc='subl ~/.zshrc'
+
+# copy working directory to clipboard (only works on local mac)
+alias cwd='printf '%s' $(pwd) | pbcopy; echo \--Copied `pwd`--\'
+
+# inspired by Luca--thank you!
+alias makej='make -j'
+alias maken='make -j12'
+
+# git diff, save to file, and open in sublime
+alias subdiff='git diff > diff.diff && sublime diff.diff'
+
+# Makes new dir and jumps inside (I use this all the time)
+mkd () { mkdir -p "$1" && cd "$1"; }
+
+# because why not? note that this is the non-git, system diff tool
+alias diff='colordiff'
+
+# always ls after cd (zsh version)
+# **this is one of my favorite things I've ever done for myself**
+function chpwd() {
+    emulate -L zsh
+    ls
+}
+
+# # automatically ls after cd (bash version)
+# function cd() {
+#     new_directory="$*";
+#     if [ $# -eq 0 ]; then
+#         new_directory=${HOME};
+#     fi;
+#     builtin cd "${new_directory}" && ls -F --color
+# }
+
+# these save having to type the user/host name when scp'ing from `ws` machine,
+# that is so named in the .ssh/config, below
+scpwsdown() {
+    scp ajdent@ws:"$1" "$2"
+}
+scpwsup() {
+    scp "$1" ajdent@ws:"$2"
+}
+
+# create a new jupyter notebook with provided name
+# because it's a pain the regular way
+# note: this does the standard in-browser jupyter notebook
+new-notebook() {
+    echo "{
+      \"cells\": [],
+      \"metadata\": {},
+      \"nbformat\": 4,
+      \"nbformat_minor\": 2
+      }" > $(pwd)/$1
+
+    jupyter-notebook $(pwd)/$1
+}
+
+# ====================================#
+#***things I use on remote machines***#
+# ====================================#
+
+# I love these, and believe they are standard in zsh
+alias ..='cd ..'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+alias .....='cd ../../../../'
+alias ......='cd ../../../../..'
+
+# activate ssh keys because I never remember to do so before a `git pull`
+# (good for when on a linux system that doesn't do so automatically)
+alias keys='eval "$(ssh-agent -s)" && ssh-add -k ~/.ssh/for_github'
+# remove them
+alias killkeys='ssh-add -D'
+
+# list processes from `top` by how long they've been running
+# lasttop := newest at bottom; firsttop := oldest at bottom
+# good for finding the pid of something if you know when you started it
+# Source: https://unix.stackexchange.com/questions/343734/in-linux-top-command-sort-by-field-time-using-command-line-iterations-1-tim
+alias lasttop='top -n 1 -b | tail -n +7 | sort -k 11Vbr'
+alias firsttop='top -n 1 -b | tail -n +7 | sort -k 11Vb'
+
+# runs the provided argument in the background, redirecting out/err to nohup.out
+# and stores the pid in pid.txt
+# I use this on remote machines--not sure if it works on mac, or when I'd use it
+# I use this quite a bit
+runbg () { nohup "$@" > nohup.out 2>&1 & echo $! >> pid.txt; }
+
+# Autocorrect typos in path names when using `cd`
+# maybe only a mac thing?
+shopt -s cdspell;
+
+# =============================================================================#
+# =============================================================================#
+#                                                   ___                        #
+#     ,--,               ,-.----.                 ,--.'|_                      #
+#   ,--.'|         ,---, \    /  \          ,--,  |  | :,'   __  ,-.           #
+#   |  |,      ,-+-. /  ||   :    |       ,'_ /|  :  : ' : ,' ,'/ /|           #
+#   `--'_     ,--.'|'   ||   | .\ :  .--. |  | :.;__,'  /  '  | |' | ,---.     #
+#   ,' ,'|   |   |  ,"' |.   : |: |,'_ /| :  . ||  |   |   |  |   ,'/     \    #
+#   '  | |   |   | /  | ||   |  \ :|  ' | |  . .:__,'| :   '  :  / /    / '    #
+#   |  | :   |   | |  | ||   : .  ||  | ' |  | |  '  : |__ |  | ' .    ' /     #
+#   '  : |__ |   | |  |/ :     |`-':  | : ;  ; |  |  | '.'|;  : | '   ; :__    #
+#   |  | '.'||   | |--'  :   : :   '  :  `--'   \ ;  :    ;|  , ; '   | '.'|   #
+#   ;  :    ;|   |/      |   | :   :  ,      .-./ |  ,   /  ---'  |   :    :   #
+#   |  ,   / '---'       `---'.|    `--`----'      ---`-'          \   \  /    #
+#   ---`-'                `---`                                    `----'      #
+# =============================================================================#
+#                              ~/.inputrc                                      #
+# =============================================================================#
+
+# NOTE: it appears zsh has most of these enabled by default
+# and doesn't source .inputrc, though I definitely use these on linux/bash
+
+# probably good to source any globally defined stuff
+$include /etc/inputrc
+
+# Make Tab autocomplete regardless of filename case
+# indispensable, imho
+set completion-ignore-case on
+
+# List all matches in case multiple possible completions are possible
+set show-all-if-ambiguous on
+
+# pressing tab will cycle through the autocomplete options
+TAB: menu-complete
+
+# Use the text that has already been typed as the prefix for searching through
+# commands (i.e. more intelligent Up/Down behavior)
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+
+# Do not autocomplete hidden files unless the pattern explicitly begins with a dot
+set match-hidden-files off
+
+# acts more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
+
+# Use Alt/Meta + Delete to delete the preceding word (like on mac)
+"\e[3;3~": kill-word
+
+# =======================================================================================#
+# =======================================================================================#
+#                       ___                                                              #
+#              ,--,   ,--.'|_                                   .--.,   ,--,             #
+#            ,--.'|   |  | :,'             ,---.        ,---, ,--.'  \,--.'|             #
+#   ,----._,.|  |,    :  : ' :            '   ,'\   ,-+-. /  ||  | /\/|  |,     ,----._,.#
+#  /   /  ' /`--'_  .;__,'  /     ,---.  /   /   | ,--.'|'   |:  : :  `--'_    /   /  ' /#
+# |   :     |,' ,'| |  |   |     /     \.   ; ,. :|   |  ,"' |:  | |-,,' ,'|  |   :     |#
+# |   | .\  .'  | | :__,'| :    /    / ''   | |: :|   | /  | ||  : :/|'  | |  |   | .\  .#
+# .   ; ';  ||  | :   '  : |__ .    ' / '   | .; :|   | |  | ||  |  .'|  | :  .   ; ';  |#
+# '   .   . |'  : |__ |  | '.'|'   ; :__|   :    ||   | |  |/ '  : '  '  : |__'   .   . |#
+#  `---`-'| ||  | '.'|;  :    ;'   | '.'|\   \  / |   | |--'  |  | |  |  | '.'|`---`-'| |#
+#  .'__/\_: |;  :    ;|  ,   / |   :    : `----'  |   |/      |  : \  ;  :    ;.'__/\_: |#
+#  |   :    :|  ,   /  ---`-'   \   \  /          '---'       |  |,'  |  ,   / |   :    :#
+#   \   \  /  ---`-'             `----'                       `--'     ---`-'   \   \  / #
+#    `--`-'                                                                      `--`-'  #
+# =======================================================================================#
+#                                   ~/.gitconfig                                         #
+# =======================================================================================#
+
+# a lot of these are commands I couldn't keep in my head but are now habits
+
+[user]
+    name  = Arthur J. Dent
+    email = ajdent@sandia.gov
+[core]
+    editor       = subl -n -w
+    excludesfile = /Users/ajdent/.gitignore_global
+[alias]
+    co      = checkout
+    ci      = commit
+    cim     = commit -m
+    cam     = commit -am
+    ame     = commit --amend
+    mforce  = push origin +main
+    fpull   = pull --rebase
+    st      = status
+    u       = add -u
+    br      = branch
+    bra     = branch -a
+    last    = log -1 HEAD
+    hash    = rev-parse --short HEAD
+    # better-looking log prints--thanks, Luca, for `lg`, which is a prettier version of my lg1
+    lg      = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold magenta)%d%C(reset)'
+    lg1     = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold black)%s%C(reset) %C(bold black)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    lg2     = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''%C(bold black)%s%C(reset) %C(bold black)- %an%C(reset)' --all
+    lg3     = log --pretty=format:'%C(blue)%h %C(bold green)%ad %C(bold blue)%an%C(bold yellow)%d %Creset%s' --date=short
+    hist    = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    type    = cat-file -t
+    dump    = cat-file -p
+    rehh    = reset --hard HEAD
+    rmv     = remote -v
+    # List aliases
+    aliases = config --get-regexp alias
+    # impossible to remember submodule command (credit for better version: Luca)
+    subrec  = ! git submodule sync --recursive && git submodule update --init --recursive --progress
+    orprune = remote prune origin
+    fetch   = fetch -p
+    pull    = pull -p
+# can't remember what these do, but seemed important at one point
+[filter "lfs"]
+    clean    = git-lfs clean -- %f
+    smudge   = git-lfs smudge -- %f
+    process  = git-lfs filter-process
+    required = true
+# these might require my color scheme to look reasonable
+[color "status"]
+    added     = yellow
+    changed   = green
+    untracked = cyan
+[init]
+# be like Daenerys--kill the masters
+    defaultBranch = main
+
+# ====================================#
+#****below is my .gitignore_global****#
+# ====================================#
+
+# auto save files
+*~
+
+# macos ds_store
+.DS_Store
+
+# pycharm idea file
+.idea
+
+# debug symbols
+*.dSYM
+
+# latex files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.bbl
+*.blg
+*-eps-converted-to.pdf
+
+# =============================================================================#
+# =============================================================================#
+#                                          ____                                #
+#                         ,--,           ,'  , `.                              #
+#                       ,--.'|        ,-+-,.' _ |  __  ,-.                     #
+#                  .---.|  |,      ,-+-. ;   , ||,' ,'/ /|                     #
+#                /.  ./|`--'_     ,--.'|'   |  ||'  | |' | ,---.               #
+#              .-' . ' |,' ,'|   |   |  ,', |  |,|  |   ,'/     \              #
+#             /___/ \: |'  | |   |   | /  | |--' '  :  / /    / '              #
+#             .   \  ' .|  | :   |   : |  | ,    |  | ' .    ' /               #
+#              \   \   ''  : |__ |   : |  |/     ;  : | '   ; :__              #
+#               \   \   |  | '.'||   | |`-'      |  , ; '   | '.'|             #
+#                \   \ |;  :    ;|   ;/           ---'  |   :    :             #
+#                 '---" |  ,   / '---'                   \   \  /              #
+#                        ---`-'                           `----'               #
+# =============================================================================#
+#                               ~/.vimrc                                       #
+# =============================================================================#
+
+# I don't use vim all that often, but this one has saved my bacon before
+
+# allows you to undo/redo from previous sessions on the same file
+# Note: first you must mkdir $HOME/.vim/undo (just once)
+# Note: I've got the below commented since it's goofy vimrc syntax
+# Source: https://jovicailic.org/2017/04/vim-persistent-undo/
+# if has('persistent_undo')      "check if your vim version supports it
+#     set undofile                 "turn on the feature
+#     set undodir=$HOME/.vim/undo  "directory where the undo files will be stored
+# endif
+
+# ==========================================================================================================#
+# ==========================================================================================================#
+#                             ,---,              ,--,                                                       #
+#                           ,--.' |             / .`|                             .--.,   ,--,              #
+#                           |  |  :            /' / ;        ,---.        ,---, ,--.'  \,--.'|              #
+#       .--.--.    .--.--.  :  :  :           /  / .'       '   ,'\   ,-+-. /  ||  | /\/|  |,     ,----._,. #
+#      /  /    '  /  /    ' :  |  |,--.      /  / ./,---.  /   /   | ,--.'|'   |:  : :  `--'_    /   /  ' / #
+#     |  :  /`./ |  :  /`./ |  :  '   |     / ./  //     \.   ; ,. :|   |  ,"' |:  | |-,,' ,'|  |   :     | #
+#     |  :  ;_   |  :  ;_   |  |   /' :    /  /  //    / ''   | |: :|   | /  | ||  : :/|'  | |  |   | .\  . #
+#      \  \    `. \  \    `.'  :  | | |   /  /  /.    ' / '   | .; :|   | |  | ||  |  .'|  | :  .   ; ';  | #
+#       `----.   \ `----.   \  |  ' | :  ;  /  / '   ; :__|   :    ||   | |  |/ '  : '  '  : |__'   .   . | #
+# ___  /  /`--'  //  /`--'  /  :  :_:,'./__;  /  '   | '.'|\   \  / |   | |--'  |  | |  |  | '.'|`---`-'| | #
+#/  .\'--'.     /'--'.     /|  | ,'    |   : /   |   :    : `----'  |   |/      |  : \  ;  :    ;.'__/\_: | #
+#\  ; | `--'---'   `--'---' `--''      ;   |/     \   \  /          '---'       |  |,'  |  ,   / |   :    : #
+# `--"                                 `---'       `----'                       `--'     ---`-'   \   \  /  #
+#                                                                                                  `--`-'   #
+# ==========================================================================================================#
+#                                   ~/.ssh/config                                                           #
+# ==========================================================================================================#
+
+# This is a good reference for setting up public key authentication:
+# https://kb.iu.edu/d/aews
+# This one gives some extra attention to the config file, itself:
+# https://linuxize.com/post/using-the-ssh-config-file/
+
+# this seems to be required for github/gitlab, though I'm not sure why
+# the following one is not sufficient--if anyone knows why, I'd love to hear it
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/ajdent_Github
+  IdentityFile ~/.ssh/for_gitlab
+
+Host github
+    HostName github.com
+    User git
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/ajdent_Github
+
+Host gitlab
+    HostName gitlab.com
+    User git
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/for_gitlab
+
+# workstation on SRN
+Host ws
+    HostName complicated_workstation_name
+    User ajdent
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/id_ed25519
+
+# the below is for a 2 step tunnel (not sure if anyone at Sandia needs this)
+# I formerly used this to use a university cluster when I was off campus, and
+# without this, I had to ssh to the campus network and then again to the cluster
+Host step1
+    HostName campus-server.college.edu
+    User arthur_dent
+    # apparently the 2 specifies that this is a DSA key
+    Identityfile2 ~/.ssh/campus-server-key
+
+Host uni_cluster
+    User arthur_dent
+    ProxyCommand ssh arthur_dent@step1 -W %h:%p
+    Identityfile2 ~/.ssh/campus-server-key
+
+# =============================================================================#
+# =============================================================================#
+#                          ____                                                #
+#                        ,'  , `.  ,--,                                        #
+#                     ,-+-,.' _ |,--.'|                                        #
+#                  ,-+-. ;   , |||  |,      .--.--.                            #
+#                 ,--.'|'   |  ||`--'_     /  /    '     ,---.                 #
+#                |   |  ,', |  |,,' ,'|   |  :  /`./    /     \                #
+#                |   | /  | |--' '  | |   |  :  ;_     /    / '                #
+#                |   : |  | ,    |  | :    \  \    `. .    ' /                 #
+#                |   : |  |/     '  : |__   `----.   \'   ; :__                #
+#                |   | |`-'      |  | '.'| /  /`--'  /'   | '.'|               #
+#                |   ;/          ;  :    ;'--'.     / |   :    :               #
+#                '---'           |  ,   /   `--'---'   \   \  /                #
+#                                 ---`-'                `----'                 #
+# =============================================================================#
+#                   Talk outline and other miscellanea                         #
+# =============================================================================#
+
+
+# Outline:
+# ========
+
+# Configuration files
+    # bashrc/zshrc
+    # inputrc
+    # gitconfig
+    # vimrc
+    # ssh config
+# Useful tools
+    # Visual Studio Code (I promise you, it's miles better than you think it is)
+        # plugins
+            # Python/Pylance
+            # Jupyter/Jupyter notebook renderers
+            # Remote Development
+            # Docker
+            # C/C++
+            # Cmake
+            # language-specific syntax highlighting/linting
+                # (currently only a few others on approved list, so use at your own risk)
+        # Jupyter notebooks in vscode are amazing
+        # ssh functionality in Remote Development is amazing
+    # Latexit via `Services`
+        # maybe mac only?
+        # bundled with mactex distribution, though mine recently bugged, so I'm
+            # on the homebrew version
+        # global keyboard shortcut (I set cmd+option+shift+T)
+        # \begin{cases}\rho \frac{\partial \boldsymbol{u}}{\partial t}+\rho(\boldsymbol{u} \cdot \nabla) \boldsymbol{u}-\nabla \cdot \boldsymbol{\sigma}(\boldsymbol{u}, p)=\boldsymbol{f} & \text { in } \Omega \times(0, T) \\ \nabla \cdot \boldsymbol{u}=0 & \text { in } \Omega \times(0, T) \\ \boldsymbol{u}=\boldsymbol{g} & \text { on } \Gamma_{D} \times(0, T) \\ \sigma(\boldsymbol{u}, p) \hat{\boldsymbol{n}}=\boldsymbol{h} & \text { on } \Gamma_{N} \times(0, T) \\ \boldsymbol{u}(0)=\boldsymbol{u}_{0} & \text { in } \Omega \times\{0\}\end{cases}
+            # Note: I translated the above from wikipedia using a really cool
+            # product called Mathpix Snipping Tool on my personal computer.
+            # However, it's not on the snl approved list so it's not on this machine
+        # Outlook
+        # Powerpoint
+            # write the latex source in the 'notes' part, so you'll have it later
+        # Others?
+# Suggestions from others:
+    # Luca: see list/files (permission to add to repo?)
+    # Scot: see list (permission to add to repo?)
+    # Andy: handwritten list
+        # I favor a handful of latex lists, these days
+    # Jeff Johnson:
+        # learn to incorporate `grep` and `find` into your workflow
+        # don't produce anything that can't be replicated/run using a
+        # text editor and terminal (e.g., relies on an IDE)
+    # Andrew Bradley:
+        # screen (or tmux)
+        # emacs
+        # github repo with machine-independent bash and emacs config files
+        # **This has inspired me to do something similar with a bashrc repo that
+            # gets sourced by a remote machine's local bashrc
+            # ... haven't tried this yet, but reach out later if you're interested
+# Vexing Questions:
+    # Does anyone know if you can pop out a compose mail pane in Outlook?
+    # What's with the `Host *` that Github uses?
+    # Does anyone know how to "fix" Outlook's interpretation of ctrl+A/E?
+
+
