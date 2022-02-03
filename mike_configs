@@ -387,6 +387,9 @@ Host gitlab
 Host ws
     HostName complicated_workstation_name
     User ajdent
+    # this disables any banners that print on login
+    # (even ones ~/.hushlogin doesn't silence)
+    LogLevel quiet
     AddKeysToAgent yes
     UseKeychain yes
     IdentityFile ~/.ssh/id_ed25519
